@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Mobile Numerology Engine</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; text-align: center; padding: 15px; background: #f4f6fa; margin: 0; color: #333; }
+        .container { max-width: 100%; margin: 10px auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); box-sizing: border-box; }
+        .lang-switch { display: flex; justify-content: flex-end; margin-bottom: 15px; gap: 8px; }
+        .lang-btn { background: #e2e8f0; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85em; cursor: pointer; }
+        .lang-btn.active { background: #6200ee; color: white; }
+        h2 { margin: 10px 0 5px; color: #1a1a1a; font-size: 1.6em; }
+        p.subtitle { color: #666; font-size: 0.9em; margin-bottom: 20px; }
+        .form-group { text-align: left; margin-bottom: 12px; }
+        label { font-size: 0.9em; font-weight: 600; color: #4a5568; margin-bottom: 5px; display: block; }
+        input, button { width: 100%; padding: 14px; margin: 5px 0; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-size: 1em; -webkit-appearance: none; }
+        input:focus { border-color: #6200ee; outline: none; box-shadow: 0 0 0 3px rgba(98,0,238,0.15); }
+        button { background: #6200ee; color: white; font-weight: bold; cursor: pointer; border: none; margin-top: 15px; }
+        #report-preview { display: none; margin-top: 25px; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 10px; background: #fff; text-align: left; }
+        .pdf-page { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.04); margin: 15px auto; padding: 25px 20px 40px 20px; position: relative; border-radius: 8px; min-height: 520px; box-sizing: border-box; }
+        .pdf-header { position: absolute; top: 12px; right: 20px; font-size: 0.8em; font-weight: bold; color: #a0aec0; }
+        .pdf-footer { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; font-size: 0.85em; font-weight: 700; color: #6200ee; letter-spacing: 1px; }
+        .cover-title { font-size: 1.8em; font-weight: 800; color: #2d3748; text-align: center; margin-top: 40px; text-transform: uppercase; }
+        .ganesh-container { text-align: center; margin: 30px 0; }
+        .ganesh-svg { width: 100px; height: 120px; fill: #dd6b20; }
+        .mantra { font-style: italic; font-weight: 600; text-align: center; color: #b7791f; font-size: 0.95em; padding: 0 10px; line-height: 1.4; }
+        .loshu-table { width: 180px; margin: 15px auto; border-collapse: collapse; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .loshu-table td { width: 60px; height: 60px; border: 2px solid #2d3748; text-align: center; font-size: 1.4em; font-weight: bold; color: #1a202c; }
+        .grid-missing { color: #cbd5e1 !important; font-weight: 300 !important; font-size: 1em !important; }
+        .section-heading { border-bottom: 2px solid #6200ee; padding-bottom: 4px; color: #2d3748; font-size: 1.2em; margin-top: 10px; margin-bottom: 12px; font-weight: bold; text-transform: uppercase; }
+        .data-row { margin-bottom: 8px; font-size: 0.95em; line-height: 1.4; }
+        .wallpaper-card { background: linear-gradient(135deg, #ff007f, #7f00ff, #00f0ff); padding: 15px; border-radius: 10px; color: white; text-align: center; font-weight: bold; margin: 12px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="lang-switch">
+            <button class="lang-btn active" id="btn-en" onclick="setLanguage('en')">English</button>
+            <button class="lang-btn" id="btn-hi" onclick="setLanguage('hi')">हिंदी</button>
+        </div>
+        <h2 id="ui-title">🔮 Mobile Numerology Pro</h2>
+        <p class="subtitle" id="ui-subtitle">Generate comprehensive Lo Shu Grid analytical reports</p>
+        <div class="form-group">
+            <label id="lbl-dob">Select Date of Birth:</label>
+            <input type="date" id="dobInput">
+        </div>
+        <div class="form-group">
+            <label id="lbl-phone">Enter 10-Digit Mobile Number:</label>
+            <input type="number" id="mobileInput" pattern="[0-9]*" inputmode="numeric" placeholder="9876543210">
+        </div>
+        <button onclick="generateLoshuReport()" id="ui-btn">Generate Strategic Report</button>
+        <div id="report-preview"></div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
