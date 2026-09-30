@@ -32,7 +32,7 @@ const translationDict = {
         wallpaper: "अनुशंसित रणनीतिक मोबाइल वॉलपेपर",
         dashas: "गणना की गई महादशा समयरेखा (100 वर्ष क्षितिज)",
         genRem: "सामान्य ज्योतिषीय एवं कंपन रेमेडीज",
-        scoreText: "परिकल्पित डिजिटल रूट कंपन स्कोर:",
+        scoreText: "परिकल्पित डिजिटलूट कंपन स्कोर:",
         gridTitle: "आपका व्यक्तिगत जन्म एवं मोबाइल मिश्रित लो शू ग्रिड मैट्रिक्स"
     }
 };
@@ -83,7 +83,9 @@ function generateLoshuReport() {
 
     const phoneTotal = calculateSingleDigit(phoneValue);
     
-    const combinedString = dobValue.replace(/-/g, '') + phoneValue;
+    // Formatting fixing for all mobile phone types
+    const rawDob = dobValue.replace(/-/g, '');
+    const combinedString = rawDob + phoneValue;
     const counts = {};
     for (let char of combinedString) {
         counts[char] = (counts[char] || 0) + 1;
@@ -94,9 +96,21 @@ function generateLoshuReport() {
         return `<td>${num.toString().repeat(Math.min(counts[num], 3))}</td>`;
     };
 
-    const dobDay = dobValue.split('-');
-    const driver = calculateSingleDigit(dobDay);
-    const conductor = calculateSingleDigit(dobValue.replace(/-/g, ''));
+    // Safe extraction of birth date component parts
+    const dateParts = dobValue.split('-');
+    
+    // Multi-browser dynamic extraction strategy
+    let birthDayStr = "";
+    if (dateParts[0].length === 4) {
+        // Format is YYYY-MM-DD
+        birthDayStr = dateParts[2];
+    } else {
+        // Format is DD-MM-YYYY
+        birthDayStr = dateParts[0];
+    }
+    
+    const driver = calculateSingleDigit(birthDayStr);
+    const conductor = calculateSingleDigit(rawDob);
 
     const engines = {
         en: {
@@ -115,11 +129,11 @@ function generateLoshuReport() {
             missing: "Analyze missing grid numbers to structure external gemstone or directional adjustments."
         },
         hi: {
-            wallpaperName: ["नियोन सोलर क्रिमसन चेरियट", "प्रिजमैटिक क्रेसेंट टाइडल वेव", "एमराल्ड साइबर लोटस मैट्रिक्स", "टोपाज़ जियोमेट्रिक वॉल्ट", "मरकरी मैसेंजर ऑरोरा होराइजन", "डायमंड लग्जरी कैश फ्लो स्प्लैश", "डीप वॉयलेट कॉस्मिक नेबुला", "ओबिलिस्क ओब्सीडियन फोर्ट्रेस ग्रिड", "रूबी वोल्केनो फायर मैट्रिक्स"],
+            wallpaperName: ["नियोन सोलर क्रिमसन चेरियट", "प्रिजमैटिक क्रेसेंट टाइडल वेव", "एमराल्ड साइबर लोटस मैट्रिक्स", "टोपाज़ जियोमेट्रिक वॉल्ट", "मरकरी मैसेंजर ऑरोरा होराइजन", "डायमंड लग्जरी कैश फ्लो स्प्लैश", "डीप वॉयलेट कॉस्मिक नेबुला", "ओबिलिस्क ओब्सीडियन फोर्ट्रेस ग्रिड", "रूबी वोल्केनो फायर接收 मैट्रिक्स"],
             remedies: [
                 "तांबे का सिक्का पास रखें, गहरे रूबी रंग पहनें, सूर्य देव को अर्घ्य दें।",
                 "चांदी का एक छल्ला धारण करें, उत्तर दिशा की ओर सोएं, सफेद रंग का प्रयोग करें।",
-                "पुखराज धारण करें, कलाई पर पीला रेशमीधागा बांधें, बड़ों का सम्मान करें।",
+                "पुखराज धारण करें, कलाई पर पीला रेशमी धागा बांधें, बड़ों का सम्मान करें।",
                 "स्टील की अंगूठी पहनें, गहरे रंग के सामान का सीमित प्रयोग करें, बेसहारा पशुओं को भोजन दें।",
                 "हरे रंग के गैजेट कवर्स का उपयोग करें, वर्क डेस्क पर पौधे रखें, स्पष्ट संवाद रखें।",
                 "स्फटिक क्रिस्टल पास रखें, हल्के पेस्टल रंगों का उपयोग करें, विलासिता तत्वों को बढ़ाएं।",
@@ -167,9 +181,3 @@ function generateLoshuReport() {
                 <tr>${buildGridItem(3)}${buildGridItem(5)}${buildGridItem(7)}</tr>
                 <tr>${buildGridItem(8)}${buildGridItem(1)}${buildGridItem(6)}</tr>
             </table>
-            <div class="section-heading">${lang.recTotal}</div>
-            <div class="data-row">${lang.scoreText} <strong>${phoneTotal}</strong></div>
-            <div class="section-heading">${lang.luckUnluck}</div>
-            <div class="data-row"><strong>Lucky Digits:</strong> ${driver}, 5, 6</div>
-            <div class="data-row"><strong>Neutral Digits:</strong> 1, 3, 7</div>
-              
