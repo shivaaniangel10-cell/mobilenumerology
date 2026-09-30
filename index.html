@@ -42,16 +42,106 @@
         <h2 id="ui-title">🔮 Mobile Numerology Pro</h2>
         <p class="subtitle" id="ui-subtitle">Generate comprehensive Lo Shu Grid analytical reports</p>
         <div class="form-group">
-            <label id="lbl-dob">Select Date of Birth:</label>
-            <input type="date" id="dobInput">
+            <label id="lbl-dob">Enter Date of Birth (DDMMYYYY):</label>
+            <input type="number" id="dobInput" pattern="[0-9]*" inputmode="numeric" placeholder="e.g. 21091973">
         </div>
         <div class="form-group">
             <label id="lbl-phone">Enter 10-Digit Mobile Number:</label>
-            <input type="number" id="mobileInput" pattern="[0-9]*" inputmode="numeric" placeholder="9876543210">
+            <input type="number" id="mobileInput" pattern="[0-9]*" inputmode="numeric" placeholder="e.g. 9876543210">
         </div>
         <button onclick="generateLoshuReport()" id="ui-btn">Generate Strategic Report</button>
         <div id="report-preview"></div>
     </div>
-    <script src="app.js"></script>
-</body>
-</html>
+
+    <script>
+        let currentLang = 'en';
+        const translationDict = {
+            en: {
+                invalid: "Please fill out both fields correctly. DOB must be 8 digits, Mobile must be 10 digits.",
+                p1Title: "MOBILE NUMEROLOGY REPORT",
+                p2Title: "LO SHU GRID MATRIX & MAP",
+                p3Title: "WALLPAPER & REMEDIES ANALYSIS",
+                p4Title: "100-YEARS MAHADASHA TIMELINE",
+                mantra: "‖ Om Gam Ganapataye Namaha ‖<br>May Lord Ganesha remove all obstacles from your destiny path.",
+                recTotal: "Recommended Mobile Total Number",
+                luckUnluck: "Lucky / Unlucky Numbers Mapping",
+                luckCol: "Lucky / Unlucky Colours Architecture",
+                missingNos: "Missing Numbers & Structural Remedies",
+                wallpaper: "Recommended Strategic Mobile Wallpaper",
+                dashas: "Calculated Mahadasha Timeline (100 Years Horizon)",
+                genRem: "General Astrological & Vibration Remedies",
+                scoreText: "Calculated Digital Root Vibration:",
+                gridTitle: "Your Personal Birth & Mobile Merged Lo Shu Grid Matrix"
+            },
+            hi: {
+                invalid: "कृपया दोनों विवरण सही से भरें। जन्म तिथि 8 अंकों की और मोबाइल नंबर 10 अंकों का होना चाहिए।",
+                p1Title: "मोबाइल अंकशास्त्र विश्लेषण रिपोर्ट",
+                p2Title: "लो शू ग्रिड मैट्रिक्स एवं विश्लेषण मैप",
+                p3Title: "वॉलपेपर एवं सुधारात्मक रेमेडीज विश्लेषण",
+                p4Title: "100 वर्ष महादशा काल चक्र समयरेखा",
+                mantra: "‖ ॐ गं गणपतये नमः ‖<br>भगवान श्री गणेश आपके भाग्य मार्ग से सभी बाधाओं को दूर करें।",
+                recTotal: "अनुशंसित मोबाइल कुल योग नंबर",
+                luckUnluck: "लकी / अनलकी अंक मैपिंग विन्यास",
+                luckCol: "भाग्यशाली / दुर्भाग्यपूर्ण रंगों की वास्तुकला",
+                missingNos: "मिसिंग नंबर विश्लेषण एवं व्यावहारिक उपाय",
+                wallpaper: "अनुशंसित रणनीतिक मोबाइल वॉलपेपर",
+                dashas: "गणना की गई महादशा समयरेखा (100 वर्ष क्षितिज)",
+                genRem: "सामान्य ज्योतिषीय एवं कंपन रेमेडीज",
+                scoreText: "परिकल्पित डिजिटल रूट कंपन स्कोर:",
+                gridTitle: "आपका व्यक्तिगत जन्म एवं मोबाइल मिश्रित लो शू ग्रिड मैट्रिक्स"
+            }
+        };
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${lang}`).classList.add('active');
+            
+            if(lang === 'hi') {
+                document.getElementById('ui-title').innerText = "🔮 मोबाइल न्यूमरोलॉजी प्रो";
+                document.getElementById('ui-subtitle').innerText = "व्यापक लो शू ग्रिड और सुधारात्मक रिपोर्ट तैयार करें";
+                document.getElementById('lbl-dob').innerText = "जन्म तिथि दर्ज करें (DDMMYYYY):";
+                document.getElementById('lbl-phone').innerText = "10-अंकों का मोबाइल नंबर दर्ज करें:";
+                document.getElementById('ui-btn').innerText = "रणनीतिक रिपोर्ट तैयार करें";
+            } else {
+                document.getElementById('ui-title').innerText = "🔮 Mobile Numerology Pro";
+                document.getElementById('ui-subtitle').innerText = "Generate comprehensive Lo Shu Grid analytical reports";
+                document.getElementById('lbl-dob').innerText = "Enter Date of Birth (DDMMYYYY):";
+                document.getElementById('lbl-phone').innerText = "Enter 10-Digit Mobile Number:";
+                document.getElementById('ui-btn').innerText = "Generate Strategic Report";
+            }
+        }
+
+        function calculateSingleDigit(str) {
+            let numbers = str.replace(/\D/g, '');
+            let sum = 0;
+            for (let char of numbers) { sum += parseInt(char); }
+            while (sum > 9) { sum = sum.toString().split('').reduce((acc, d) => acc + parseInt(d), 0); }
+            return sum === 0 ? 9 : sum;
+        }
+
+        function generateLoshuReport() {
+            const dobValue = document.getElementById('dobInput').value;
+            const phoneValue = document.getElementById('mobileInput').value.replace(/\D/g, '');
+            const lang = translationDict[currentLang];
+
+            if (!dobValue || dobValue.length < 8 || phoneValue.length < 10) {
+                alert(lang.invalid);
+                return;
+            }
+
+            const phoneTotal = calculateSingleDigit(phoneValue);
+            const combinedString = dobValue + phoneValue;
+            const counts = {};
+            for (let char of combinedString) { counts[char] = (counts[char] || 0) + 1; }
+
+            const buildGridItem = (num) => {
+                if (!counts[num]) return `<td class="grid-missing">${num}</td>`;
+                return `<td>${num.toString().repeat(Math.min(counts[num], 3))}</td>`;
+            };
+
+            const driver = calculateSingleDigit(dobValue.substring(0, 2));
+            const conductor = calculateSingleDigit(dobValue);
+
+            const engines = {
+                en: {
